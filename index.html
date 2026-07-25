@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MEFS® 검사자 자격 시험 · StoryLine</title>
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+:root{
+  --teal:#12A392; --teal-deep:#0B7E71; --teal-tint:#E7F6F3; --teal-line:#BEE6DF;
+  --ink:#101614; --ink-2:#48544F; --ink-3:#8A968F;
+  --paper:#FFFFFF; --shell:#F4F7F5; --line:#E3E9E5;
+  --warn:#C2543F; --warn-tint:#FBEDE9;
+  --r:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  background:var(--shell); color:var(--ink);
+  font-size:16px; line-height:1.6; letter-spacing:-.01em;
+  -webkit-font-smoothing:antialiased;
+  word-break:keep-all;
+}
+.wrap{max-width:760px;margin:0 auto;padding:28px 20px 72px}
+.micro{
+  font-size:11px;font-weight:700;letter-spacing:.18em;color:var(--teal);
+  text-transform:uppercase;
+}
+.micro.muted{color:var(--ink-3)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:26px 24px}
+hr.rule{border:0;border-top:2px solid var(--teal);margin:12px 0 22px;width:64px}
+
+/* ---------- header ---------- */
+header.brand{display:flex;align-items:baseline;gap:10px;margin-bottom:26px}
+header.brand .mark{font-size:19px;font-weight:800;letter-spacing:-.03em}
+header.brand .mark span{color:var(--teal)}
+header.brand .tag{font-size:12px;color:var(--ink-3);letter-spacing:.02em}
+
+/* ---------- home ---------- */
+h1{font-size:30px;line-height:1.28;font-weight:800;letter-spacing:-.035em;margin:6px 0 10px}
+.lede{color:var(--ink-2);font-size:15px;margin:0 0 24px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-2);margin-bottom:6px;letter-spacing:.01em}
+.field input{
+  width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;
+  font:inherit;font-size:15px;background:#fff;color:var(--ink)
+}
+.field input:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:transparent}
+
+.modlist{margin-top:26px;display:grid;gap:10px}
+.mod{
+  display:flex;align-items:center;gap:16px;width:100%;text-align:left;cursor:pointer;
+  background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+  font:inherit;color:inherit;transition:border-color .15s,transform .15s,background .15s
+}
+.mod:hover{border-color:var(--teal);transform:translateY(-1px)}
+.mod:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.mod .num{
+  font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--teal);
+  background:var(--teal-tint);border-radius:8px;padding:8px 10px;min-width:44px;text-align:center
+}
+.mod.is-final .num{background:var(--ink);color:#fff}
+.mod .body{flex:1;min-width:0}
+.mod .body b{display:block;font-size:16px;font-weight:700;letter-spacing:-.02em}
+.mod .body small{display:block;color:var(--ink-3);font-size:12.5px;margin-top:2px}
+.mod .arrow{color:var(--ink-3);font-size:18px}
+.mod .done{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--teal-deep)}
+.mod .fail{color:var(--warn)}
+
+.notebox{
+  margin-top:26px;background:var(--teal-tint);border-radius:12px;padding:18px 20px;
+  font-size:13.5px;color:var(--ink-2)
+}
+.notebox b{color:var(--ink)}
+.notebox ul{margin:8px 0 0;padding-left:18px}
+.notebox li{margin:3px 0}
+
+/* ---------- quiz ---------- */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.qhead .who{font-size:12px;color:var(--ink-3)}
+.bar{height:4px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:26px}
+.bar > i{display:block;height:100%;background:var(--teal);width:0;transition:width .35s cubic-bezier(.4,0,.2,1)}
+.qnum{font-size:11px;font-weight:800;letter-spacing:.16em;color:var(--teal)}
+.qtext{font-size:20px;line-height:1.5;font-weight:700;letter-spacing:-.025em;margin:10px 0 4px}
+.qnote{font-size:13px;color:var(--warn);background:var(--warn-tint);border-radius:8px;padding:8px 12px;margin:12px 0 0}
+.opts{margin:22px 0 0;display:grid;gap:9px}
+.opt{
+  display:flex;gap:13px;align-items:flex-start;cursor:pointer;
+  border:1px solid var(--line);border-radius:11px;padding:14px 16px;background:#fff;
+  font:inherit;text-align:left;color:inherit;transition:border-color .12s,background .12s
+}
+.opt:hover{border-color:var(--teal-line);background:#FCFEFD}
+.opt.sel{border-color:var(--teal);background:var(--teal-tint)}
+.opt:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.opt .box{
+  flex:none;width:20px;height:20px;border:1.5px solid #C6D0CB;border-radius:50%;margin-top:2px;
+  display:grid;place-items:center;transition:.12s
+}
+.opt[data-multi="1"] .box{border-radius:6px}
+.opt.sel .box{border-color:var(--teal);background:var(--teal)}
+.opt.sel .box::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
+.opt[data-multi="1"].sel .box::after{
+  content:'';width:10px;height:6px;border:2px solid #fff;border-top:0;border-right:0;
+  border-radius:1px;background:none;transform:rotate(-45deg) translate(1px,-1px)
+}
+.opt .txt{font-size:15.5px;line-height:1.5}
+
+/* matching */
+.matchrow{border:1px solid var(--line);border-radius:11px;padding:14px 16px;background:#fff}
+.matchrow + .matchrow{margin-top:9px}
+.matchrow p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.matchrow select{
+  width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;
+  font:inherit;font-size:14.5px;background:#fff;color:var(--ink)
+}
+.matchrow select:focus{outline:2px solid var(--teal);outline-offset:1px}
+
+.actions{margin-top:26px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.btn{
+  border:0;border-radius:10px;padding:14px 26px;font:inherit;font-size:15px;font-weight:700;
+  letter-spacing:-.01em;cursor:pointer;background:var(--teal);color:#fff;transition:background .12s
+}
+.btn:hover{background:var(--teal-deep)}
+.btn:disabled{background:#CBD5D0;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line)}
+.btn.ghost:hover{background:#fff;border-color:var(--ink-3)}
+.btn:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.hint{font-size:12.5px;color:var(--ink-3)}
+
+/* ---------- result ---------- */
+.score{display:flex;align-items:baseline;gap:6px;margin:8px 0 2px}
+.score b{font-size:64px;font-weight:800;letter-spacing:-.05em;line-height:1}
+.score i{font-size:22px;font-weight:700;font-style:normal;color:var(--ink-3)}
+.verdict{font-size:22px;font-weight:800;letter-spacing:-.03em;margin:14px 0 6px}
+.pass .verdict,.pass .score b{color:var(--teal-deep)}
+.fail .verdict,.fail .score b{color:var(--warn)}
+.meta{font-size:14px;color:var(--ink-2);margin:0}
+.codebox{
+  margin-top:22px;border:1px dashed var(--teal-line);background:var(--teal-tint);
+  border-radius:11px;padding:16px 18px
+}
+.codebox .micro{margin-bottom:6px;display:block}
+.codebox code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:17px;font-weight:700;
+  letter-spacing:.06em;color:var(--ink)
+}
+.idbox{
+  margin-top:18px;padding:14px 16px;background:var(--teal-tint);border-radius:10px
+}
+.idbox .micro{display:block;margin-bottom:5px}
+.idbox code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:17px;font-weight:700;
+  letter-spacing:.04em;color:var(--ink)
+}
+.idbox small{display:block;margin-top:7px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.sendbox{
+  margin-top:14px;font-size:13.5px;color:var(--ink-2);display:flex;align-items:center;
+  gap:9px;flex-wrap:wrap;line-height:1.5
+}
+.sendbox .dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--ink-3)}
+.sendbox .dot.sending{background:var(--teal);animation:pulse 1.1s ease-in-out infinite}
+.sendbox .dot.ok{background:var(--teal)}
+.sendbox .dot.err{background:var(--warn)}
+.sendbox.error{color:var(--warn)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.linkbtn{
+  border:0;background:none;padding:0;font:inherit;font-size:13.5px;font-weight:700;
+  color:var(--teal-deep);text-decoration:underline;cursor:pointer
+}
+footer.foot{
+  margin-top:36px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:10.5px;letter-spacing:.14em;color:var(--ink-3);text-align:center
+}
+@media (max-width:520px){
+  .wrap{padding:20px 15px 56px}
+  h1{font-size:25px}
+  .qtext{font-size:18px}
+  .score b{font-size:52px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ============================================================
+   MEFS® 검사자 자격 온라인 시험
+   - 정답은 SHA-256 해시로만 저장됩니다(소스에 평문 없음).
+   - 결과 자동 수집을 원하면 아래 RECORD_URL에 Google Apps Script
+     웹앱 주소를 넣으세요. 비워 두면 결과 코드만 발급됩니다.
+   ============================================================ */
+const RECORD_URL = "https://script.google.com/macros/s/AKfycbxz4n7S3IW5a_raiulMAL00rWajQI4K7e_RJykpo4zh3cDsyRXUoPb7m_DYNMOcLshG/exec";           // 예: "https://script.google.com/macros/s/AKfy.../exec"
+const PASS_MARK  = 0.8;          // 통과 기준 80%
+const COOLDOWN_H = 24;           // 불합격 시 재응시 대기 시간(시간)
+const SALT = "mefs-korea-2026-storyline";
+
+const DATA = [{"id": "m1", "no": "01", "title": "실행기능과 EFgo™의 이해", "sub": "모듈 1 퀴즈", "final": false, "q": [{"k": "single", "t": "EFgo™로 얻은 정보는 다음 중 어떤 대상이 아동의 학습 경로(learning pathway)를 설계하는 데 활용할 수 있습니까?", "h": "f4b3672105dd773313ae2f5549840d31462c3e70896d183a2d215a2cf27e09fd", "o": ["학부모", "연구자", "교사", "모든 선택지가 정답이다"], "fx": 1}, {"k": "multi", "t": "실행기능에 포함되는 세 가지 핵심 기술은 무엇입니까?", "h": "aa941c67d29e983143b521406fda1141b28365a32fed9baf64ba17ae094a3ea0", "n": "세 가지를 모두 선택해야 정답으로 인정됩니다.", "o": ["억제 통제 (충동 조절)", "작업 기억", "인지적 유연성", "문해력"]}, {"k": "tf", "t": "실행기능 기술은 훈련될 수 없다.", "h": "bc593692a2481df9064825886c04755382e9e65185ed2e2d373840b9c14f1d12", "o": ["참", "거짓"], "fx": 1}, {"k": "single", "t": "실행기능 기술은 다음 중 어떤 성과를 예측할 수 있습니까?", "h": "1ce54e3d6c577803e701b9a290ceac901bf474caf4eb3f10341996b5f907d469", "o": ["특정 ACT 점수", "사회정서적 기술 수준", "내향성의 정도", "빠르게 학습하는 능력"]}, {"k": "single", "t": "유치원에서의 성공과 관련해 가장 중요한 기술은 무엇입니까?", "h": "49f196cd1f01357404c200e57e95067d0e095b937769da4431686d3591b6977e", "o": ["친구를 사귀는 능력", "주의를 집중하는 능력", "줄에서 가만히 서 있는 능력", "글자와 숫자에 대한 지식"]}]}, {"id": "m2", "no": "02", "title": "MEFS® 검사의 개요", "sub": "모듈 2 퀴즈", "final": false, "q": [{"k": "single", "t": "EFgo™의 구조가 가능하게 하는 것은 무엇입니까?", "h": "1d57f1332a74bfbfaf49f6b3be4f1814dfaa963f79a7e31047e443aca2aad4dd", "o": ["학부모의 데이터 포털 접근", "훈련 여부와 관계없이 아무 성인이나 검사를 시행하는 것", "시간 경과에 따른 반복 검사"]}, {"k": "single", "t": "EFgo™는 어떤 연령 집단을 대상으로 합니까?", "h": "611aa591ea84ecaf213945c7b936be204c97b6ab6a89b443764ec99c0422ddf9", "o": ["만 2~6세", "만 2세 이상", "만 5~10세", "만 3~12세"]}, {"k": "single", "t": "MEFS®의 각 파트에서 아동이 상위 레벨로 올라가려면 최소 _____ 의 통과 기준을 충족해야 합니다.", "h": "73ac6e02a260383a46e2538c955ac2096ede7606d98caada5f0b5bebc1664b1e", "o": ["60%", "70%", "80%", "90%"]}, {"k": "single", "t": "게임 형식을 사용하는 것은 다른 직접 평가 방식에 비해 어떤 장점이 있습니까?", "h": "e40742388036f9e8bd8eb35c6927d9563752906d1e8731c0a1c768d232356f02", "o": ["아동의 몰입도가 더 높다.", "아동이 더 빨리 지루해한다.", "데이터의 신뢰도가 더 높다.", "오해석의 여지가 더 적다."]}, {"k": "tf", "t": "MEFS®는 한 사람의 전 생애에 걸친 실행기능 변화 추적을 가능하게 한다.", "h": "4afd8efbb854f138941f0e1bd5600733314034af5de08b74837d71ed61d57b84", "o": ["참", "거짓"], "fx": 1}, {"k": "single", "t": "MEFS®의 평균 시행 시간은 대략 어느 정도입니까?", "h": "efcde5d9409a95b4043f99d7f032eb9f4a592ffdf6d96df7bc936e0e722c03b0", "o": ["2~6분", "10~15분", "30~45분", "60~75분"]}, {"k": "single", "t": "수행 결과 지표에 포함되지 않는 것은 무엇입니까?", "h": "220244c3828a7a3648b1b94c7ce4e276c9a79a889de9ccbda9193fa926549f61", "o": ["기저 레벨 (Basal Level)", "총점 (Total Score)", "국가 백분위 (National Percentile)", "완료 시간 순위 (Completion Time Ranking)"]}]}, {"id": "m3", "no": "03", "title": "MEFS® 소프트웨어의 구조", "sub": "모듈 3 퀴즈", "final": false, "q": [{"k": "single", "t": "참가자의 권장 시작 레벨은 어떻게 정해집니까?", "h": "d01de0e51ef034b5ffe10242570a5f3855fb07b88acfe6f59b24df317335f21e", "o": ["부모가 선택한다", "참가자의 연령(월령)에 따라 결정된다", "항상 레벨 4에서 시작하고 첫 본 시행 후 조정된다", "무작위이며 따라서 중요하지 않다"]}, {"k": "single", "t": "MEFS®는 몇 개의 레벨로 구성되어 있습니까?", "h": "30984ea9631f5bb47bea2f1a45a34a381b561d0aa77174aec2abd37a8d0d866e", "o": ["4", "5", "6", "7"]}, {"k": "single", "t": "EFgo™는 다음 중 어떤 환경에서 사용할 수 있습니까?", "h": "a57c5ffb82fde5a4dec82aea722687fa79e9cf162f447b4210e3d2a255c827d5", "o": ["유아교육기관 (ECE 센터)", "노숙인 쉼터", "학교", "모든 선택지가 정답이다"], "fx": 1}, {"k": "tf", "t": "규칙 확인(Rule Check)은 각 규칙에서 아동이 무엇을 요구받는지 이해하고 있음을 확인해 준다.", "h": "f2d461b51ffbc238a2f97b31e302fc351a74893da8489a148ff3707aabfb57a2", "o": ["참", "거짓"], "fx": 1}, {"k": "tf", "t": "아동이 색맹이라면 검사는 유효하지 않다.", "h": "77fad07c0329a375b39414cbd4a2ee43d6974a327b739bc5103c6101ae6bb47d", "o": ["참", "거짓"], "fx": 1}, {"k": "single", "t": "MEFS® 레벨 1~4의 올바른 진행 순서는 무엇입니까?", "h": "8dadd37b6585abb9d9b61bccf1bc27904fc5f2876ed50af8712ed987a7750e9d", "o": ["설명·시연 → 규칙 확인 → 본 시행", "설명·시연 → 본 시행 → 규칙 확인", "검사자 분류 → 아동 분류 → 검사자 분류", "규칙 확인 → 설명·시연 → 본 시행"]}, {"k": "tf", "t": "EFgo™는 인터넷 연결이 필요하다.", "h": "404b42cc53c686169e20e255dec6ba83e0d5c0f675000fb2a592ec30299390b9", "o": ["참", "거짓"], "fx": 1}]}, {"id": "m4", "no": "04", "title": "MEFS® 시행 가이드", "sub": "모듈 4 퀴즈", "final": false, "q": [{"k": "multi", "t": "검사 중 아동이 “선생님이 대신 해 주면 안 돼요?”라고 물을 때, 허용되는 반응은 무엇입니까?", "h": "8b988e652e0557ecd5ff6ecfd92068613abb6c2c5ec019dfc319c49cb381dcbe", "n": "두 가지 모두 허용되는 반응입니다.", "o": ["“지금은 네가 하는 게임이야.”", "“네가 어떻게 하는지 보고 싶어.”", "“하기 싫은데.”", "“그래.”"]}, {"k": "single", "t": "제시된 지침에 따르면, 아동이 카드를 상자에 넣은 뒤 답을 바꾸고 싶어할 때 검사자는 어떻게 해야 합니까?", "h": "501737c44e7243168cbb47074eac05127a64153fd324225a4499ed4c64f568f0", "o": ["요청을 무시하고 다음 시행으로 넘어간다.", "카드가 상자에 들어가면 그 시행은 종료되었음을 아동에게 알려 준다.", "같은 카드를 빠르게 다시 시도하도록 격려한다.", "카드를 꺼내 답을 바꾸도록 허용한다."]}, {"k": "multi", "t": "아동이 마우스(카드) 조작을 어려워하거나 너무 세게 누를 때, 권장되는 도움의 형태는 무엇입니까?", "h": "040b756a29d44ca0d1685378cd3eda7eb2fa4e3ae1d873b2d6d95d148778725e", "n": "두 가지 모두 권장되는 도움의 단계입니다.", "o": ["아동의 손을 잡고 함께 움직이며 카드를 옮기는 데 가벼운 압력만 필요함을 보여 준다.", "아동의 선택을 확인하지 않고 모든 카드를 대신 분류해 준다.", "카드를 넣을 상자를 아동이 손으로 짚게 한 뒤, 선택을 확인하고 나서 대신 분류해 준다.", "어디에 넣을지 묻지 않고 검사자가 대신 눌러 준다."]}, {"k": "single", "t": "MEFS® 검사 과정에 대한 설명으로 옳은 것은 무엇입니까?", "h": "dfdaa6f574152346a42146c5a893b32315f4ad0b7600818fb5e91f82c200a291", "o": ["규칙 확인에서 두 번 모두 실패하면 아동은 검사를 계속할 수 없다.", "MEFS® 검사는 기기가 인터넷에 연결되어 있어야만 실행된다.", "MEFS® 본 시행 중에는 피드백이 허용된다.", "규칙 확인의 응답은 아동의 MEFS® 점수에 직접 반영된다."]}, {"k": "single", "t": "제시된 지침에 따르면, 아동이 카드 분류를 계속 어려워할 때 검사자는 어떻게 해야 합니까?", "h": "578523bbcab66b11045e7bcbbdbe2510fbf5d94dd3815b1574351f485bc1bea7", "o": ["검사자가 스스로 올바른 상자를 골라 카드를 대신 분류한다.", "매 시행마다 아동이 어떤 상자에 넣고 싶은지 명확히 확인한 후에만 카드를 대신 분류한다.", "즉시 검사를 중단하고 해당 세션을 폐기한다.", "각 카드를 어느 상자에 넣어야 하는지 아동에게 알려 준다."]}, {"k": "single", "t": "태블릿 사용 경험이 적을 수 있는 어린 아동과 MEFS® 검사를 진행할 때 권장되는 것은 무엇입니까?", "h": "3179ce50d25535c3257b88aa7661fec8bd6d1e3e58c2e963ff4af43a6f8c507c", "o": ["워밍업 없이 즉시 검사를 시작한다.", "아동이 혼란스러워하면 카드를 어디에 넣을지 알려 준다.", "태블릿 대신 종이 카드를 사용하게 한다.", "검사 시작 전 태블릿으로 5분 정도의 짧은 '워밍업' 활동을 제공한다."]}]}, {"id": "final", "no": "05", "title": "최종 인증 시험 · EFgo™ Certification", "sub": "최종 인증 시험", "final": true, "q": [{"k": "single", "t": "다음 중 핵심 실행기능 기술이 아닌 것은 무엇입니까?", "h": "36ab627cbb675cd17e689001a2415049ee495db2ecaaa5f4bc81f52b65e558d0", "o": ["작업 기억", "과제 관리", "인지적 유연성", "억제 통제"]}, {"k": "single", "t": "MEFS®는 교육자와 양육자가 무엇을 할 수 있도록 중요한 데이터를 제공합니까?", "h": "121ba690e6d2ebedc91e9e231fb0d2293bb59d9e8ec77e9bbea103549947f37c", "o": ["아동의 수학적 능력을 판단하도록", "아동의 가정 환경을 이해하도록", "아동이 매일 겪는 스트레스의 양을 예측하도록", "아동에게 적절한 중재를 제공하도록"]}, {"k": "tf", "t": "EFgoPRO™는 하루 중 실행할 수 있는 추천 교실 활동을 제공한다.", "h": "b3a24da8dd03d6093eb5ae801a1829e7eee01b1d7f251a113fe13a9ff92eb67b", "o": ["참", "거짓"], "fx": 1}, {"k": "single", "t": "첫 번째 규칙 확인에서 아동이 카드를 상자로 끌어다 놓기를 어려워합니다. 가장 적절한 대응은 무엇입니까?", "h": "55d97d3b51d1e597b46ff67dbfefa082474e1d933966dffebc3e274eb25874bd", "o": ["성공할 때까지 반복해서 연습하도록 강하게 요구한다.", "시범을 보이기 위해 검사자가 카드를 대신 분류하고, 아동도 그렇게 하려 했을 것이라고 가정한다.", "아동의 손을 잡고 손가락으로 카드를 끌어 본다. 아동이 불편해하면 어느 상자에 넣고 싶은지 분명하게 표시하도록 요청한다. 지속적이고 가벼운 압력만 필요함을 보여 준다.", "그날의 과제를 중단하고, 가능하다면 다른 시간을 찾아 검사를 이어 간다."]}, {"k": "single", "t": "아동이 매우 졸리거나 산만해서 모든 과제를 완료할 수 없어 보입니다. 최선의 선택은 무엇입니까?", "h": "b80604314684beebdc7a786c3cffbabde5199ad08d5dbb8470ae2dea990c5fd7", "o": ["그날의 과제를 중단하고, 가능하다면 다른 시간을 찾아 검사를 이어 간다.", "어쨌든 모든 과제를 끝까지 진행한다.", "과제를 중단하고 아동을 검사 불가로 간주한다.", "검사가 끝나면 하고 싶은 일을 물어보고, 과제가 끝나는 대로 그 활동을 하게 해 주겠다고 약속한다."]}, {"k": "single", "t": "MEFS® 각 레벨의 일반적인 구조는 무엇입니까?", "h": "9f1693f6b825fb097a4803ec4c7c35581235e772e19d091ed569bcaa7011d820", "o": ["시연 → 설명 → 본 시행(파트 A·B) → 규칙 확인", "시연 → 규칙 확인 → 본 시행(파트 A·B) → 설명", "설명 → 시연 → 규칙 확인 → 본 시행(파트 A·B)", "설명 → 본 시행(파트 A·B) → 시연 → 규칙 확인"]}, {"k": "single", "t": "MEFS® 각 레벨의 통과 기준은 얼마입니까?", "h": "7f559609201362bac264445b8345c787f6f5187cfe12e8ab38a4543eb842db19", "o": ["90%", "80%", "75%", "100%"]}, {"k": "single", "t": "MEFS® 시행 중 아동의 질문에 대해 '허용되지 않는 반응'의 두 가지 범주는 무엇입니까?", "h": "0a511e157e824b35adc043698e8b309235a9b29b42a7d47c4ca3eb4b5a193b37", "o": ["최선을 다하도록 안심시키는 반응과 선택을 도와주는 반응", "무시하거나 정직하지 않은 반응과 어떻게 생각하는지 되묻는 반응", "선택을 도와주는 반응과, 무시하거나 정직하지 않은 반응", "어떻게 생각하는지 되묻는 반응과 최선을 다하도록 안심시키는 반응"]}, {"k": "single", "t": "학생이 MEFS®에서 52 백분위를 받았다면 그 의미는 무엇입니까?", "h": "1bb69e571b887fc83211bc25feac19f2f75ccebc8e241082aaecf5bcd92ae5be", "o": ["문항의 52%를 맞혔다", "같은 연령·성별 학생들보다 52% 낮게 수행했다", "같은 연령·성별 학생들의 52%보다 잘 수행했다", "같은 연령 학생들과 비교해 평균 이하로 수행했다"]}, {"k": "single", "t": "MEFS®의 평균 표준점수는 얼마입니까?", "h": "c6446d1ab009e585ad47227a6e86529d4d653fd4e0dff2b9361d06489c0f7955", "o": ["50", "80", "90", "100"]}, {"k": "match", "t": "다음 실행기능 발달 특징을 알맞은 연령 집단과 연결하세요.", "h": "60ef78752a3f79e68d44ee17292b12554f7036f9edabc5faaffe67de9266930b", "n": "네 개를 모두 맞혀야 정답으로 인정됩니다.", "L": ["사물 범주화가 더 유연해져, 봉제 공이 '공'이면서 동시에 '부드러운 장난감'일 수 있음을 이해하기 시작한다.", "타인의 자기조절/억제(또는 그 부재)에 대한 통찰을 보인다.", "3개의 정보를 마음속에 유지하며 다룰 수 있다.", "새로운 상황으로 주의를 유연하게 옮기고, 불쾌하게 느끼는 것에서 주의를 거두기 시작한다."], "R": ["영아기 (0~12개월)", "걸음마기 (12~24개월)", "유아기 (만 2~4세)", "취학 전기 (만 4~5세)"]}]}];
+
+/* ---------- 상태 ---------- */
+const S = { name:"", tail:"", mod:null, order:[], idx:0,
+            answers:[], results:{}, send:"idle", lastRow:null, tick:null };
+const app = document.getElementById("app");
+
+/* ---------- 유틸 ---------- */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+async function sha256(str){
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+/* 응시자 ID = 이름(공백 제거) + '-' + 연락처 끝 4자리 */
+const uid = () => S.name.replace(/\s+/g,"") + "-" + S.tail;
+
+/* 로컬 대기 기록 — 서버 확인이 불가능할 때의 보조 수단 */
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+};
+const coolKey = (id, mod) => "mefs.cool." + id + "." + mod;
+
+function remainText(ms){
+  const h = Math.floor(ms/3600000), m = Math.floor(ms%3600000/60000), s = Math.floor(ms%60000/1000);
+  if(h > 0) return `${h}시간 ${m}분`;
+  if(m > 0) return `${m}분 ${s}초`;
+  return `${s}초`;
+}
+function whenText(ts){
+  const d = new Date(ts);
+  return d.toLocaleString("ko-KR", { month:"long", day:"numeric", hour:"numeric", minute:"2-digit" });
+}
+
+const brandHead = `<header class="brand"><div class="mark">Story<span>Line</span></div>
+  <div class="tag">MEFS® 검사자 자격 시험</div></header>`;
+const footer = `<footer class="foot">PLAYTAG &nbsp;×&nbsp; REFLECTION SCIENCES</footer>`;
+
+/* ============================================================
+   홈 화면
+   ============================================================ */
+function renderHome(){
+  const cards = DATA.map(m=>{
+    const r = S.results[m.id];
+    let badge = `<span class="arrow">→</span>`;
+    if(r) badge = `<span class="done ${r.pass?'':'fail'}">${r.pct}% · ${r.pass?'합격':'재응시 필요'}</span>`;
+    return `<button class="mod ${m.final?'is-final':''}" data-mod="${m.id}">
+      <span class="num">${m.final?'FINAL':m.no}</span>
+      <span class="body"><b>${esc(m.sub)}</b><small>${esc(m.title)} · ${m.q.length}문항 · 통과 기준 80%</small></span>
+      ${badge}
+    </button>`;
+  }).join("");
+
+  app.innerHTML = `${brandHead}
+  <div class="micro">MEFS KOREA &nbsp;×&nbsp; PLAYTAG</div>
+  <hr class="rule">
+  <h1>실행기능평가<br>검사자 자격 시험</h1>
+  <p class="lede">모듈 퀴즈 4종과 최종 인증 시험으로 구성됩니다. 각 시험에서 80% 이상을 획득해야 통과하며,
+  최종 인증 시험까지 통과하면 MEFS® 공인 검사자 자격이 부여됩니다.</p>
+
+  <div class="card">
+    <div class="field"><label for="nm">이름</label><input id="nm" value="${esc(S.name)}" placeholder="홍길동" autocomplete="name"></div>
+    <div class="field"><label for="tl">휴대폰 뒤 4자리</label>
+      <input id="tl" value="${esc(S.tail)}" placeholder="1234" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+    <div class="idbox">
+      <span class="micro">응시자 ID</span>
+      <code id="idprev">—</code>
+      <small>이름과 뒤 4자리를 합친 값이 응시 기록의 식별자가 됩니다. 모든 시험에서 같은 값을 입력해 주세요.</small>
+    </div>
+  </div>
+
+  <div class="modlist">${cards}</div>
+
+  <div class="notebox">
+    <b>응시 전에 확인해 주세요</b>
+    <ul>
+      <li>문항은 한 번에 하나씩 제시되며, <b>이전 문항으로 돌아갈 수 없습니다.</b></li>
+      <li>답을 선택한 뒤 '다음'을 누르면 그 문항은 확정됩니다.</li>
+      <li>결과는 마지막에 점수(%)로만 표시되며, 정답은 공개되지 않습니다.</li>
+      <li><b>80% 미만이면 ${COOLDOWN_H}시간 뒤에 재응시할 수 있습니다.</b> 대기 시간 동안 학습 자료를 다시 확인해 주세요.</li>
+      <li>재응시 시 문항과 선택지 순서가 바뀝니다.</li>
+    </ul>
+  </div>
+  ${footer}`;
+
+  const $nm = document.getElementById("nm"), $tl = document.getElementById("tl"),
+        $id = document.getElementById("idprev");
+  const paintId = () => {
+    const n = $nm.value.trim().replace(/\s+/g,""), t = $tl.value.trim();
+    $id.textContent = (n && t.length===4) ? n + "-" + t : "—";
+  };
+  $nm.oninput = e => { S.name = e.target.value; paintId(); };
+  $tl.oninput = e => { e.target.value = e.target.value.replace(/\D/g,"").slice(0,4); S.tail = e.target.value; paintId(); };
+  paintId();
+
+  app.querySelectorAll(".mod").forEach(b=>{
+    b.onclick = () => {
+      S.name = $nm.value.trim(); S.tail = $tl.value.trim();
+      if(!S.name){ $nm.focus(); alert("이름을 입력해 주세요."); return; }
+      if(S.tail.length !== 4){ $tl.focus(); alert("휴대폰 뒤 4자리를 입력해 주세요."); return; }
+      gate(b.dataset.mod);
+    };
+  });
+}
+
+/* ============================================================
+   응시 자격 확인 — 불합격 후 COOLDOWN_H 시간 대기
+   서버(Apps Script) 기록을 우선 확인하고, 확인이 불가능하면
+   브라우저에 남은 로컬 기록으로 대체 판정합니다.
+   ============================================================ */
+function gate(modId){
+  const m = DATA.find(x=>x.id===modId);
+  const id = uid();
+
+  const localUntil = () => {
+    const v = Number(store.get(coolKey(id, modId)) || 0);
+    return (v && v > Date.now()) ? v : 0;
+  };
+
+  if(!RECORD_URL){
+    const u = localUntil();
+    return u ? renderBlocked(m, u, "local") : startQuiz(modId);
+  }
+
+  renderChecking(m);
+  ask({ action:"check", uid:id, module:modId }, res => {
+    if(res && res.ok){
+      if(res.blockedUntil) return renderBlocked(m, res.blockedUntil, "server");
+      return startQuiz(modId);
+    }
+    const u = localUntil();
+    return u ? renderBlocked(m, u, "local") : startQuiz(modId);
+  });
+}
+
+function renderChecking(m){
+  app.innerHTML = `${brandHead}
+  <div class="micro">${m.final?'FINAL · EFGO™ CERTIFICATION':'QUIZ '+m.no}</div>
+  <hr class="rule">
+  <div class="card">
+    <div class="sendbox sending"><span class="dot sending"></span>응시 자격을 확인하는 중입니다…</div>
+  </div>
+  ${footer}`;
+}
+
+function renderBlocked(m, until, source){
+  if(S.tick) clearInterval(S.tick);
+  app.innerHTML = `${brandHead}
+  <div class="micro muted">RETAKE ON HOLD · 재응시 대기</div>
+  <hr class="rule">
+  <div class="card fail">
+    <div class="verdict">아직 재응시할 수 없습니다</div>
+    <p class="meta">${esc(m.sub)}에서 통과 기준에 도달하지 못했습니다.
+    학습 내용을 다시 확인할 수 있도록 ${COOLDOWN_H}시간의 대기 시간이 적용됩니다.</p>
+    <div class="codebox">
+      <span class="micro">남은 시간</span>
+      <code id="cd">—</code>
+      <p class="meta" style="margin-top:10px">${whenText(until)}부터 응시할 수 있습니다.</p>
+    </div>
+    ${source === "local" ? `<p class="hint" style="margin-top:14px">이 브라우저에 남은 기록을 기준으로 안내하고 있습니다.</p>` : ""}
+    <div class="actions"><button class="btn ghost" id="home">시험 목록으로</button></div>
+  </div>
+  ${footer}`;
+  document.getElementById("home").onclick = () => { clearInterval(S.tick); renderHome(); };
+  const cd = document.getElementById("cd");
+  const paint = () => {
+    const left = until - Date.now();
+    if(left <= 0){ clearInterval(S.tick); cd.textContent = "지금 응시할 수 있습니다"; return; }
+    cd.textContent = remainText(left);
+  };
+  paint();
+  S.tick = setInterval(paint, 1000);
+  window.scrollTo(0,0);
+}
+
+/* ============================================================
+   시험 진행
+   ============================================================ */
+function startQuiz(modId){
+  const m = DATA.find(x=>x.id===modId);
+  S.mod = m;
+  S.order = shuffle(m.q.map((q,i)=>({...q, oi:i})));
+  S.order = S.order.map(q=>{
+    if(q.k === "match"){
+      return {...q, rmap: shuffle(q.R.map((t,i)=>({t,i})))};
+    }
+    const opts = q.o.map((t,i)=>({t,i}));
+    return {...q, omap: q.fx ? opts : shuffle(opts)};
+  });
+  S.idx = 0;
+  S.answers = [];
+  renderQuestion();
+  window.scrollTo(0,0);
+}
+
+function renderQuestion(){
+  const m = S.mod, q = S.order[S.idx], n = S.order.length;
+  const pct = Math.round((S.idx / n) * 100);
+  let sel = [];
+  let body;
+
+  if(q.k === "match"){
+    const opts = q.rmap.map(o=>`<option value="${o.i}">${esc(o.t)}</option>`).join("");
+    body = `<div class="opts">` + q.L.map((l,li)=>`
+      <div class="matchrow">
+        <p>${esc(l)}</p>
+        <select data-li="${li}">
+          <option value="">— 연령 집단 선택 —</option>${opts}
+        </select>
+      </div>`).join("") + `</div>`;
+  } else {
+    const multi = q.k === "multi" ? 1 : 0;
+    body = `<div class="opts">` + q.omap.map(o=>`
+      <button class="opt" data-multi="${multi}" data-i="${o.i}">
+        <span class="box"></span><span class="txt">${esc(o.t)}</span>
+      </button>`).join("") + `</div>`;
+  }
+
+  app.innerHTML = `${brandHead}
+  <div class="qhead">
+    <div class="micro">${m.final?'FINAL · EFGO™ CERTIFICATION':'QUIZ '+m.no} &nbsp;·&nbsp; ${S.idx+1} / ${n}</div>
+    <div class="who">${esc(S.name)} · ${esc(uid())}</div>
+  </div>
+  <div class="bar"><i style="width:${pct}%"></i></div>
+
+  <div class="card">
+    <div class="qnum">${String(S.idx+1).padStart(2,"0")} / ${String(n).padStart(2,"0")}</div>
+    <p class="qtext">${esc(q.t)}</p>
+    ${q.n ? `<p class="qnote">${esc(q.n)}</p>` : ""}
+    ${body}
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="next" disabled>${S.idx+1===n ? "제출하고 채점하기" : "다음 문항"}</button>
+    <span class="hint">이전 문항으로는 돌아갈 수 없습니다.</span>
+  </div>
+  ${footer}`;
+
+  const next = document.getElementById("next");
+
+  if(q.k === "match"){
+    const sels = [...app.querySelectorAll("select")];
+    const check = () => { next.disabled = sels.some(s=>s.value===""); };
+    sels.forEach(s => s.onchange = check);
+    next.onclick = () => submitAnswer(sels.map(s=>Number(s.value)));
+  } else {
+    const btns = [...app.querySelectorAll(".opt")];
+    btns.forEach(b=>{
+      b.onclick = () => {
+        const i = Number(b.dataset.i);
+        if(q.k === "multi"){
+          if(sel.includes(i)) sel = sel.filter(x=>x!==i); else sel.push(i);
+          b.classList.toggle("sel");
+        } else {
+          sel = [i];
+          btns.forEach(x=>x.classList.remove("sel"));
+          b.classList.add("sel");
+        }
+        next.disabled = sel.length === 0;
+      };
+    });
+    next.onclick = () => submitAnswer(q.k === "match" ? sel : sel.slice().sort((a,b)=>a-b));
+  }
+  window.scrollTo(0,0);
+}
+
+function submitAnswer(payload){
+  const q = S.order[S.idx];
+  const canon = q.k === "match" ? payload.join(";") : payload.join(",");
+  S.answers.push({ oi:q.oi, canon });
+  S.idx++;
+  if(S.idx < S.order.length) renderQuestion(); else grade();
+}
+
+/* ============================================================
+   채점
+   ============================================================ */
+async function grade(){
+  const m = S.mod;
+  let correct = 0;
+  for(const a of S.answers){
+    const hash = await sha256(SALT + "|" + m.id + "#" + a.oi + "#" + a.canon);
+    if(hash === m.q[a.oi].h) correct++;
+  }
+  const total = m.q.length;
+  const pct = Math.round((correct/total)*1000)/10;
+  const pass = (correct/total) >= PASS_MARK - 1e-9;
+  S.results[m.id] = { pct: (pct % 1 === 0 ? pct.toFixed(0) : pct.toFixed(1)), pass, correct, total };
+  const code = await makeCode(m.id, correct, total, pass);
+  if(!pass) store.set(coolKey(uid(), m.id), String(Date.now() + COOLDOWN_H*3600000));
+  S.lastRow = {
+    uid: uid(), name: S.name, tail: S.tail,
+    module: m.id, moduleName: m.sub,
+    correct, total, pct, pass: pass ? "합격" : "불합격", code
+  };
+  S.send = RECORD_URL ? "sending" : "off";
+  renderResult(code);
+  if(RECORD_URL) send();
+}
+
+async function makeCode(modId, correct, total, pass){
+  const d = new Date();
+  const ymd = d.getFullYear().toString().slice(2) + String(d.getMonth()+1).padStart(2,"0") + String(d.getDate()).padStart(2,"0");
+  const h = await sha256([SALT, uid(), modId, correct, total, ymd].join("|"));
+  return `${modId.toUpperCase()}-${ymd}-${h.slice(0,6).toUpperCase()}-${pass?"P":"R"}`;
+}
+
+/* JSONP 요청 — CORS 제약 없이 응답까지 받을 수 있습니다. */
+function ask(params, done){
+  const cb = "mefscb_" + Date.now() + Math.floor(Math.random()*10000);
+  const qs = new URLSearchParams({ ...params, callback: cb }).toString();
+  const tag = document.createElement("script");
+  let settled = false;
+  const finish = res => {
+    if(settled) return; settled = true;
+    delete window[cb]; tag.remove(); clearTimeout(timer);
+    done(res);
+  };
+  window[cb] = res => finish(res);
+  tag.onerror = () => finish(null);
+  const timer = setTimeout(() => finish(null), 12000);
+  tag.src = RECORD_URL + (RECORD_URL.includes("?") ? "&" : "?") + qs;
+  document.body.appendChild(tag);
+}
+
+function send(){
+  S.send = "sending"; paintSend();
+  ask({ action:"record", ...S.lastRow }, res => {
+    S.send = (res && res.ok) ? "ok" : "error";
+    paintSend();
+  });
+}
+
+function paintSend(){
+  const el = document.getElementById("sendbox");
+  if(!el) return;
+  const map = {
+    sending: `<span class="dot sending"></span>응시 기록을 전송하는 중입니다…`,
+    ok:      `<span class="dot ok"></span>응시 기록이 담당자에게 전송되었습니다.`,
+    error:   `<span class="dot err"></span>기록 전송에 실패했습니다. 아래 결과 코드를 담당자에게 직접 전달해 주세요. <button class="linkbtn" id="resend">다시 전송</button>`
+  };
+  el.className = "sendbox " + S.send;
+  el.innerHTML = map[S.send] || "";
+  const rb = document.getElementById("resend");
+  if(rb) rb.onclick = send;
+}
+
+function renderResult(code){
+  const m = S.mod, r = S.results[m.id];
+  app.innerHTML = `${brandHead}
+  <div class="micro muted">RESULT &nbsp;·&nbsp; ${m.final?'최종 인증 시험':'모듈 '+m.no+' 퀴즈'}</div>
+  <hr class="rule">
+  <div class="card ${r.pass?'pass':'fail'}">
+    <div class="score"><b>${r.pct}</b><i>%</i></div>
+    <p class="meta">${r.total}문항 중 ${r.correct}문항 정답 · 통과 기준 80%</p>
+    <div class="verdict">${r.pass ? (m.final ? "합격 · MEFS® 공인 검사자 자격 취득" : "통과 · 다음 모듈로 진행하세요") : "재응시가 필요합니다"}</div>
+    <p class="meta">${r.pass
+      ? "아래 결과 코드를 교육 담당자에게 전달해 주세요."
+      : `해당 모듈 학습 내용을 다시 확인한 뒤 재응시해 주세요. 정답은 공개되지 않습니다.
+         <br><b>${whenText(Date.now() + COOLDOWN_H*3600000)}</b>부터 다시 응시할 수 있습니다.`}</p>
+
+    <div class="codebox">
+      <span class="micro">RESULT CODE · 결과 코드</span>
+      <code>${code}</code>
+    </div>
+
+    ${S.send === "off" ? "" : `<div class="sendbox" id="sendbox"></div>`}
+
+    <div class="actions">
+      <button class="btn ${r.pass?'':'ghost'}" id="retry">${r.pass ? "다시 응시하기" : `${COOLDOWN_H}시간 뒤 재응시`}</button>
+      <button class="btn ${r.pass?'ghost':''}" id="home">시험 목록으로</button>
+    </div>
+  </div>
+  ${footer}`;
+  document.getElementById("retry").onclick = () => gate(m.id);
+  document.getElementById("home").onclick = renderHome;
+  paintSend();
+  window.scrollTo(0,0);
+}
+
+/* 진행 중 이탈 방지 */
+window.addEventListener("beforeunload", e => {
+  if(S.mod && S.idx > 0 && S.idx < S.order.length){ e.preventDefault(); e.returnValue = ""; }
+});
+
+renderHome();
+</script>
+</body>
+</html>
