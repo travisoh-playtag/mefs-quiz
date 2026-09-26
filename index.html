@@ -76,6 +76,38 @@ h1{font-size:30px;line-height:1.28;font-weight:800;letter-spacing:-.035em;margin
 .notebox b{color:var(--ink)}
 .notebox ul{margin:8px 0 0;padding-left:18px}
 .notebox li{margin:3px 0}
+.notebox.top{margin-top:18px}
+.verr{margin-top:12px;background:var(--warn-tint);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:13px}
+
+/* ---------- 연수 영상 + 퀴즈 단위 ---------- */
+.flow-hint{margin:26px 0 0;font-size:13px;color:var(--ink-3);display:flex;align-items:center;gap:8px}
+.flow-hint .micro{color:var(--teal)}
+.locked{
+  margin-top:14px;border:1px dashed var(--line);border-radius:12px;padding:22px 20px;text-align:center;
+  color:var(--ink-3);font-size:14px;background:#FBFCFC
+}
+.units{margin-top:14px;display:grid;gap:18px}
+.unit{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px}
+.unit.is-final{border-color:var(--ink);border-width:1.5px}
+.unit-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.unit-head .num{
+  font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--teal);
+  background:var(--teal-tint);border-radius:8px;padding:8px 10px;min-width:44px;text-align:center
+}
+.unit.is-final .unit-head .num{background:var(--ink);color:#fff}
+.unit-head b{display:block;font-size:16px;font-weight:700;letter-spacing:-.02em}
+.unit-head small{display:block;color:var(--ink-3);font-size:12.5px;margin-top:2px}
+.vlabel{font-size:11px;font-weight:800;letter-spacing:.16em;color:var(--teal);margin:0 0 8px}
+.video{position:relative;width:100%;padding-top:56.25%;height:0;background:#0F1412;border-radius:10px;overflow:hidden}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video-pending{
+  display:flex;align-items:center;gap:10px;background:#F3F6F5;border:1px dashed var(--line);
+  border-radius:10px;padding:14px 16px;font-size:13.5px;color:var(--ink-3)
+}
+.video-pending i{font-style:normal;font-size:18px}
+.unit .mod{margin-top:14px;background:#fff}
+.unit .mod .num{display:none}
+.unit .mod .body b::before{content:'퀴즈 응시 · ';color:var(--teal)}
 
 /* ---------- quiz ---------- */
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
@@ -193,6 +225,13 @@ footer.foot{
      웹앱 주소를 넣으세요. 비워 두면 결과 코드만 발급됩니다.
    ============================================================ */
 const RECORD_URL = "https://script.google.com/macros/s/AKfycbxz4n7S3IW5a_raiulMAL00rWajQI4K7e_RJykpo4zh3cDsyRXUoPb7m_DYNMOcLshG/exec";           // 예: "https://script.google.com/macros/s/AKfy.../exec"
+/* ------------------------------------------------------------
+   연수 영상은 구글 시트 「영상 설정」 탭에서 관리합니다.
+   (승인된 응시자에게만 서버가 링크를 내려주므로 HTML에 넣지 않습니다)
+   아래 VIDEOS는 RECORD_URL이 비어 있는 테스트 환경에서만 쓰입니다.
+   ------------------------------------------------------------ */
+const VIDEOS = { m1:"", m2:"", m3:"", m4:"", final:"" };
+
 const PASS_MARK  = 0.8;          // 통과 기준 80%
 const COOLDOWN_H = 24;           // 불합격 시 재응시 대기 시간(시간)
 const SALT = "mefs-korea-2026-storyline";
@@ -201,6 +240,7 @@ const DATA = [{"id": "m1", "no": "01", "title": "실행기능과 EFgo™의 이�
 
 /* ---------- 상태 ---------- */
 const S = { name:"", tail:"", mod:null, order:[], idx:0,
+            approved:false, approvedUid:"", org:"", videos:{},
             answers:[], results:{}, send:"idle", lastRow:null, tick:null };
 const app = document.getElementById("app");
 
@@ -239,24 +279,50 @@ const footer = `<footer class="foot">PLAYTAG &nbsp;×&nbsp; REFLECTION SCIENCES<
 /* ============================================================
    홈 화면
    ============================================================ */
+/* YouTube URL/ID → 영상 ID */
+function ytId(v){
+  v = String(v || "").trim();
+  if(!v) return "";
+  const m = v.match(/(?:v=|youtu\.be\/|embed\/|live\/|shorts\/)([A-Za-z0-9_-]{11})/);
+  if(m) return m[1];
+  return /^[A-Za-z0-9_-]{11}$/.test(v) ? v : "";
+}
+
+function videoBlock(modId, label){
+  const id = ytId((RECORD_URL ? S.videos : VIDEOS)[modId]);
+  if(!id) return `<div class="video-pending"><i>🎬</i><span><b>연수 영상 준비 중</b> · ${esc(label)} 영상이 곧 업로드됩니다.</span></div>`;
+  return `<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1"
+    title="${esc(label)} 연수 영상" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
+}
+
 function renderHome(){
-  const cards = DATA.map(m=>{
+  const units = DATA.map(m=>{
     const r = S.results[m.id];
     let badge = `<span class="arrow">→</span>`;
     if(r) badge = `<span class="done ${r.pass?'':'fail'}">${r.pct}% · ${r.pass?'합격':'재응시 필요'}</span>`;
-    return `<button class="mod ${m.final?'is-final':''}" data-mod="${m.id}">
-      <span class="num">${m.final?'FINAL':m.no}</span>
-      <span class="body"><b>${esc(m.sub)}</b><small>${esc(m.title)} · ${m.q.length}문항 · 통과 기준 80%</small></span>
-      ${badge}
-    </button>`;
+    const unitTitle = m.final ? "모듈 5 · EFgo™ 교육 전략 · 활동 · 데이터" : `모듈 ${m.no.replace(/^0/,"")} · ${m.title}`;
+    const vlabel = m.final ? "연수 영상 · 모듈 5 (최종 인증 시험 전)" : `연수 영상 · 모듈 ${m.no.replace(/^0/,"")}`;
+    return `<section class="unit ${m.final?'is-final':''}">
+      <div class="unit-head">
+        <span class="num">${m.final?'FINAL':m.no}</span>
+        <span><b>${esc(unitTitle)}</b><small>영상을 시청한 뒤 아래 ${m.final?'최종 인증 시험':'퀴즈'}에 응시하세요</small></span>
+      </div>
+      <div class="vlabel">${esc(vlabel)}</div>
+      ${videoBlock(m.id, m.final ? "모듈 5" : "모듈 " + m.no.replace(/^0/,""))}
+      <button class="mod ${m.final?'is-final':''}" data-mod="${m.id}">
+        <span class="num">${m.final?'FINAL':m.no}</span>
+        <span class="body"><b>${esc(m.sub)}</b><small>${m.q.length}문항 · 통과 기준 80%</small></span>
+        ${badge}
+      </button>
+    </section>`;
   }).join("");
 
   app.innerHTML = `${brandHead}
   <div class="micro">MEFS KOREA &nbsp;×&nbsp; PLAYTAG</div>
   <hr class="rule">
-  <h1>실행기능평가<br>검사자 자격 시험</h1>
-  <p class="lede">모듈 퀴즈 4종과 최종 인증 시험으로 구성됩니다. 각 시험에서 80% 이상을 획득해야 통과하며,
-  최종 인증 시험까지 통과하면 MEFS® 공인 검사자 자격이 부여됩니다.</p>
+  <h1>실행기능평가<br>검사자 자격 연수 · 시험</h1>
+  <p class="lede">모듈별 연수 영상을 시청한 뒤 퀴즈에 응시합니다. 모듈 퀴즈 4종과 최종 인증 시험에서 각각 80% 이상을 획득하면
+  MEFS® 공인 검사자 자격이 부여됩니다.</p>
 
   <div class="card">
     <div class="field"><label for="nm">이름</label><input id="nm" value="${esc(S.name)}" placeholder="홍길동" autocomplete="name"></div>
@@ -267,31 +333,70 @@ function renderHome(){
       <code id="idprev">—</code>
       <small>이름과 뒤 4자리를 합친 값이 응시 기록의 식별자가 됩니다. 모든 시험에서 같은 값을 입력해 주세요.</small>
     </div>
+    <div class="actions" style="margin-top:16px">
+      <button class="btn" id="verifyBtn">응시자 확인</button>
+      <span class="hint" id="vstat">${S.approved && S.approvedUid===uid() ? "✓ 확인된 응시자입니다" + (S.org ? " · " + esc(S.org) : "") : "사전 등록된 이름과 번호만 입장할 수 있습니다."}</span>
+    </div>
+    <div class="verr" id="verr" hidden></div>
   </div>
 
-  <div class="modlist">${cards}</div>
-
-  <div class="notebox">
+  <div class="notebox top">
     <b>응시 전에 확인해 주세요</b>
     <ul>
+      <li><b>각 퀴즈 전에 해당 모듈의 연수 영상을 먼저 시청해 주세요.</b> 영상은 반복해서 볼 수 있습니다.</li>
       <li>문항은 한 번에 하나씩 제시되며, <b>이전 문항으로 돌아갈 수 없습니다.</b></li>
       <li>답을 선택한 뒤 '다음'을 누르면 그 문항은 확정됩니다.</li>
       <li>결과는 마지막에 점수(%)로만 표시되며, 정답은 공개되지 않습니다.</li>
-      <li><b>80% 미만이면 ${COOLDOWN_H}시간 뒤에 재응시할 수 있습니다.</b> 대기 시간 동안 학습 자료를 다시 확인해 주세요.</li>
+      <li><b>80% 미만이면 ${COOLDOWN_H}시간 뒤에 재응시할 수 있습니다.</b> 대기 시간 동안 연수 영상을 다시 확인해 주세요.</li>
       <li>재응시 시 문항과 선택지 순서가 바뀝니다.</li>
     </ul>
   </div>
+
+  <div class="flow-hint"><span class="micro">TRAINING → QUIZ</span> 모듈 1부터 순서대로 진행하세요.</div>
+  <div class="locked" id="locked">이름과 휴대폰 뒤 4자리를 입력하고 <b>[응시자 확인]</b>을 누르면<br>연수 영상과 퀴즈가 열립니다.</div>
+  <div class="units" id="units" hidden>${units}</div>
   ${footer}`;
 
   const $nm = document.getElementById("nm"), $tl = document.getElementById("tl"),
-        $id = document.getElementById("idprev");
+        $id = document.getElementById("idprev"), $units = document.getElementById("units"),
+        $locked = document.getElementById("locked"), $btn = document.getElementById("verifyBtn"),
+        $vstat = document.getElementById("vstat"), $verr = document.getElementById("verr");
   const paintId = () => {
     const n = $nm.value.trim().replace(/\s+/g,""), t = $tl.value.trim();
-    $id.textContent = (n && t.length===4) ? n + "-" + t : "—";
+    const filled = !!(n && t.length===4);
+    const cur = filled ? n + "-" + t : "";
+    $id.textContent = cur || "—";
+    // 승인된 ID와 현재 입력이 같을 때만 연수·퀴즈 노출
+    const open = filled && (!RECORD_URL || (S.approved && S.approvedUid === cur));
+    $units.hidden = !open; $locked.hidden = open;
+    $btn.disabled = !filled || open;
+    $btn.textContent = open ? "확인 완료" : "응시자 확인";
+    if(!open){ $vstat.textContent = "사전 등록된 이름과 번호만 입장할 수 있습니다."; }
   };
-  $nm.oninput = e => { S.name = e.target.value; paintId(); };
-  $tl.oninput = e => { e.target.value = e.target.value.replace(/\D/g,"").slice(0,4); S.tail = e.target.value; paintId(); };
+  $nm.oninput = e => { S.name = e.target.value; $verr.hidden = true; paintId(); };
+  $tl.oninput = e => { e.target.value = e.target.value.replace(/\D/g,"").slice(0,4); S.tail = e.target.value; $verr.hidden = true; paintId(); };
   paintId();
+
+  $btn.onclick = () => {
+    S.name = $nm.value.trim(); S.tail = $tl.value.trim();
+    if(!S.name){ $nm.focus(); return; }
+    if(S.tail.length !== 4){ $tl.focus(); return; }
+    if(!RECORD_URL){ S.approved = true; S.approvedUid = uid(); paintId(); return; }   // 테스트 환경
+    const target = uid();
+    $btn.disabled = true; $btn.textContent = "확인 중…"; $verr.hidden = true;
+    ask({ action:"verify", uid:target }, res => {
+      if(res && res.ok){
+        S.approved = true; S.approvedUid = target; S.org = res.org || ""; S.videos = res.videos || {};
+        renderHome();   // 승인 정보로 다시 그리기
+        const u = document.getElementById("units"); if(u && u.scrollIntoView) u.scrollIntoView({ behavior:"smooth", block:"start" });
+      } else {
+        S.approved = false; S.approvedUid = "";
+        $verr.textContent = (res && res.msg) || "서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.";
+        $verr.hidden = false;
+        paintId();
+      }
+    });
+  };
 
   app.querySelectorAll(".mod").forEach(b=>{
     b.onclick = () => {
@@ -324,6 +429,7 @@ function gate(modId){
 
   renderChecking(m);
   ask({ action:"check", uid:id, module:modId }, res => {
+    if(res && res.denied){ alert(res.msg || "승인되지 않은 응시자입니다."); S.approved = false; return renderHome(); }
     if(res && res.ok){
       if(res.blockedUntil) return renderBlocked(m, res.blockedUntil, "server");
       return startQuiz(modId);
