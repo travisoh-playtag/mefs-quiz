@@ -105,9 +105,19 @@ h1{font-size:30px;line-height:1.28;font-weight:800;letter-spacing:-.035em;margin
   border-radius:10px;padding:14px 16px;font-size:13.5px;color:var(--ink-3)
 }
 .video-pending i{font-style:normal;font-size:18px}
-.unit .mod{margin-top:14px;background:#fff}
-.unit .mod .num{display:none}
-.unit .mod .body b::before{content:'퀴즈 응시 · ';color:var(--teal)}
+.unit-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:4px}
+.unit-row .btn{padding:12px 18px;font-size:14px}
+.pill{font-size:12px;font-weight:700;color:var(--ink-3);background:#F3F6F5;border-radius:20px;padding:6px 12px}
+.pill.ok{color:var(--teal-deep);background:var(--teal-tint)}
+.pill.bad{color:var(--warn);background:var(--warn-tint)}
+.quizrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.quizrow .num{
+  font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--teal);
+  background:var(--teal-tint);border-radius:8px;padding:8px 10px;min-width:44px;text-align:center
+}
+.quizrow .body{flex:1;min-width:200px}
+.quizrow .body b{display:block;font-size:16px;font-weight:700;letter-spacing:-.02em}
+.quizrow .body small{display:block;color:var(--ink-3);font-size:12.5px;margin-top:2px}
 
 /* ---------- quiz ---------- */
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
@@ -228,7 +238,7 @@ footer.foot{
    자동 갱신: 새 index.html을 올릴 때 아래 버전 문자열만 바꾸면(날짜 등),
    예전 화면이 캐시된 브라우저도 서버 버전을 확인하고 스스로 새로 불러옵니다.
    ------------------------------------------------------------ */
-const APP_VERSION = "2026-09-26.2";
+const APP_VERSION = "2026-09-27.1";
 (async () => {
   try {
     const base = location.pathname.replace(/[^/]*$/, "");
@@ -315,22 +325,21 @@ function videoBlock(modId, label){
 function renderHome(){
   const units = DATA.map(m=>{
     const r = S.results[m.id];
-    let badge = `<span class="arrow">→</span>`;
-    if(r) badge = `<span class="done ${r.pass?'':'fail'}">${r.pct}% · ${r.pass?'합격':'재응시 필요'}</span>`;
+    const no = m.final ? "FINAL" : m.no;
     const unitTitle = m.final ? "모듈 5 · EFgo™ 교육 전략 · 활동 · 데이터" : `모듈 ${m.no.replace(/^0/,"")} · ${m.title}`;
-    const vlabel = m.final ? "연수 영상 · 모듈 5 (최종 인증 시험 전)" : `연수 영상 · 모듈 ${m.no.replace(/^0/,"")}`;
+    const hasVideo = !!ytId((RECORD_URL ? S.videos : VIDEOS)[m.id]);
+    const state = r
+      ? `<span class="pill ${r.pass?'ok':'bad'}">${r.pct}% · ${r.pass?'합격':'재응시 필요'}</span>`
+      : `<span class="pill">${hasVideo ? '🎬 연수 영상 준비됨' : '영상 준비 중'}</span>`;
     return `<section class="unit ${m.final?'is-final':''}">
       <div class="unit-head">
-        <span class="num">${m.final?'FINAL':m.no}</span>
-        <span><b>${esc(unitTitle)}</b><small>영상을 시청한 뒤 아래 ${m.final?'최종 인증 시험':'퀴즈'}에 응시하세요</small></span>
+        <span class="num">${no}</span>
+        <span><b>${esc(unitTitle)}</b><small>연수 영상 시청 → ${m.final?'최종 인증 시험':'퀴즈'} ${m.q.length}문항 · 통과 기준 80%</small></span>
       </div>
-      <div class="vlabel">${esc(vlabel)}</div>
-      ${videoBlock(m.id, m.final ? "모듈 5" : "모듈 " + m.no.replace(/^0/,""))}
-      <button class="mod ${m.final?'is-final':''}" data-mod="${m.id}">
-        <span class="num">${m.final?'FINAL':m.no}</span>
-        <span class="body"><b>${esc(m.sub)}</b><small>${m.q.length}문항 · 통과 기준 80%</small></span>
-        ${badge}
-      </button>
+      <div class="unit-row">
+        ${state}
+        <button class="btn enter" data-mod="${m.id}">${r && r.pass ? '다시 보기 · 재응시' : '연수 시작'} →</button>
+      </div>
     </section>`;
   }).join("");
 
@@ -369,7 +378,7 @@ function renderHome(){
     </ul>
   </div>
 
-  <div class="flow-hint"><span class="micro">TRAINING → QUIZ</span> 모듈 1부터 순서대로 진행하세요.</div>
+  <div class="flow-hint"><span class="micro">TRAINING → QUIZ</span> 모듈 1부터 순서대로, [연수 시작]을 눌러 영상을 본 뒤 퀴즈에 응시하세요.</div>
   <div class="locked" id="locked">이름과 휴대폰 뒤 4자리를 입력하고 <b>[응시자 확인]</b>을 누르면<br>연수 영상과 퀴즈가 열립니다.</div>
   <div class="units" id="units" hidden>${units}</div>
   ${footer}`;
@@ -420,14 +429,52 @@ function renderHome(){
     });
   };
 
-  app.querySelectorAll(".mod").forEach(b=>{
+  app.querySelectorAll(".enter").forEach(b=>{
     b.onclick = () => {
       S.name = $nm.value.trim(); S.tail = $tl.value.trim();
       if(!S.name){ $nm.focus(); alert("이름을 입력해 주세요."); return; }
       if(S.tail.length !== 4){ $tl.focus(); alert("휴대폰 뒤 4자리를 입력해 주세요."); return; }
-      gate(b.dataset.mod);
+      if(RECORD_URL && !(S.approved && S.approvedUid === uid())){ alert("먼저 [응시자 확인]을 눌러 주세요."); return; }
+      renderModule(b.dataset.mod);
     };
   });
+}
+
+/* ============================================================
+   모듈 연수 화면: 영상 → 하단 퀴즈 버튼
+   ============================================================ */
+function renderModule(modId){
+  const m = DATA.find(x => x.id === modId); if(!m) return renderHome();
+  const r = S.results[m.id];
+  const label = m.final ? "모듈 5" : "모듈 " + m.no.replace(/^0/,"");
+  const title = m.final ? "EFgo™ 교육 전략 · 활동 · 데이터" : m.title;
+  const hasVideo = !!ytId((RECORD_URL ? S.videos : VIDEOS)[m.id]);
+  window.scrollTo(0,0);
+  app.innerHTML = `${brandHead}
+  <div class="micro">${m.final ? "FINAL" : "MODULE " + m.no} &nbsp;·&nbsp; 연수</div>
+  <hr class="rule">
+  <h1>${esc(label)}<br>${esc(title)}</h1>
+  <p class="lede">${hasVideo ? "아래 영상을 끝까지 시청한 뒤 하단의 버튼으로 " + (m.final?"최종 인증 시험":"퀴즈") + "에 응시하세요." : "이 모듈의 연수 영상은 준비 중입니다. 핸드북으로 학습한 뒤 응시할 수 있습니다."}</p>
+
+  <div class="card">
+    <div class="vlabel">연수 영상 · ${esc(label)}</div>
+    ${videoBlock(m.id, label)}
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="quizrow">
+      <span class="num">${m.final?'FINAL':m.no}</span>
+      <span class="body"><b>${esc(m.sub)}</b><small>${m.q.length}문항 · 통과 기준 80% · 한 문항씩 제시, 되돌아갈 수 없음</small></span>
+      ${r ? `<span class="pill ${r.pass?'ok':'bad'}">${r.pct}% · ${r.pass?'합격':'재응시 필요'}</span>` : ""}
+    </div>
+    <div class="actions">
+      <button class="btn" id="goQuiz">${m.final ? "최종 인증 시험 응시하기" : "퀴즈 응시하기"} →</button>
+      <button class="btn ghost" id="backHome">← 모듈 목록</button>
+    </div>
+  </div>
+  ${footer}`;
+  document.getElementById("goQuiz").onclick = () => gate(m.id);
+  document.getElementById("backHome").onclick = renderHome;
 }
 
 /* ============================================================
